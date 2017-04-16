@@ -16,11 +16,6 @@
     /** @ngInject */
     function config(msNavigationServiceProvider)
     {
-        // Navigation
-        // msNavigationServiceProvider.saveItem('authentication', {
-        //     title : 'Auth',
-        //     group : true,
-        //     weight: 2
-        // });
+        
     }
 })();

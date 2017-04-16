@@ -29,7 +29,7 @@
                 });
               });
             } else {
-              $state.go('app.e-commerce.orders');
+              $state.go('app.shipments.list');
             }
           }
         });

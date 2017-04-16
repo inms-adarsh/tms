@@ -28,12 +28,6 @@
         // Translation
         $translatePartialLoaderProvider.addPart('app/main/auth/reset-password');
 
-        // Navigation
-        msNavigationServiceProvider.saveItem('pages.auth.reset-password', {
-            title : 'Reset Password',
-            state : 'app.auth_reset-password',
-            weight: 6
-        });
     }
 
 })();

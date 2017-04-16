@@ -4,10 +4,10 @@
 
     angular
         .module('app.admin', [
-            'app.admin.customers'
-            // 'app.admin.drivers',
-            // 'app.admin.locations',
-            // 'app.admin.containers'
+            'app.admin.customers',
+            'app.admin.drivers',
+            'app.admin.locations',
+            'app.admin.containers'
         ])
         .config(config);
 

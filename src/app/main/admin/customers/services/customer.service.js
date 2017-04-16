@@ -6,7 +6,7 @@
         .factory('customerService', customerService);
 
     /** @ngInject */
-    function customerService($firebaseArray, $firebaseObject, authService, auth, $q, firebaseUtils) {
+    function customerService($firebaseArray, $firebaseObject, $q, authService, auth, firebaseUtils, dxUtils, config) {
         var tenantId = authService.getCurrentTenant();
         // Private variables
 
@@ -34,70 +34,70 @@
                 },
                 colCount: 2,
                 items: [{
-                    dataField: "name",
+                    dataField: 'name',
                     label: {
-                        text: "Name"
+                        text: 'Name'
                     },
                     validationRules: [{
-                        type: "required",
-                        message: "Name is required"
+                        type: 'required',
+                        message: 'Name is required'
                     }]
                 }, {
-                    dataField: "phone",
+                    dataField: 'phone',
                     label: {
-                        text: "Phone"
+                        text: 'Phone'
                     },
                     editorOptions: {
-                        mask: "0000000000"
+                        mask: '0000000000'
                     },
                     validationRules: [{
-                        type: "required",
-                        message: "Phone number is required"
+                        type: 'required',
+                        message: 'Phone number is required'
                     }]
                 }, {
-                    dataField: "email",
+                    dataField: 'email',
                     label: {
-                        text: "Email"
+                        text: 'Email'
                     },
                     validationRules: [{
-                        type: "email",
-                        message: "Please enter valid e-mail address"
+                        type: 'email',
+                        message: 'Please enter valid e-mail address'
                     }]
                 }, {
-                    dataField: "alias",
+                    dataField: 'alias',
                     label: {
-                        text: "Short Name"
+                        text: 'Short Name'
                     }
                 }, {
-                    dataField: "gstno",
+                    dataField: 'gstno',
                     label: {
-                        text: "GST No"
+                        text: 'GST No'
                     },
                     editorOptions: {
-                        mask: "00AAAAAAAAAA0A0"
+                        mask: '00AAAAAAAAAA0A0'
                     }
                 }, {
-                    dataField: "adress",
+                    dataField: 'adress',
                     label: {
-                        text: "Address"
+                        text: 'Address'
                     }
                 }, {
-                    dataField: "city",
+                    dataField: 'city',
                     label: {
-                        text: "City"
+                        text: 'City'
                     }
                 }, {
-                    dataField: "state",
+                    dataField: 'state',
                     label: {
-                        text: "State"
+                        text: 'State'
                     }
                 }, {
-                    dataField: "zipcode",
+                    dataField: 'zipcode',
                     label: {
-                        text: "ZIP/Pincode"
+                        text: 'ZIP/Pincode'
                     },
                     editorOptions: {
-                        mask: "000000"
+                        mask: '000000'
                     }
                 }],
                 onContentReady: function () {
@@ -112,78 +112,41 @@
          * @param {Object} dataSource 
          */
         function gridOptions(dataSource) {
-            var gridOptions = {
-                dataSource: {
-                    load: function() {
-                        var defer = $q.defer();
-                        fetchCustomerList().then(function(data) {
-                            defer.resolve(data);
-                        });
-                        return defer.promise;
+            var gridOptions = dxUtils.createGrid(),
+                otherConfig = {
+                    dataSource: {
+                        load: function () {
+                            var defer = $q.defer();
+                            fetchCustomerList().then(function (data) {
+                                defer.resolve(data);
+                            });
+                            return defer.promise;
+                        },
+                        insert: function (customerObj) {
+                            saveCustomer(customerObj);
+                        },
+                        update: function (key, customerObj) {
+                            updateCustomer(key, customerObj);
+                        },
+                        remove: function (key) {
+                            deleteCustomer(key);
+                        }
                     },
-                    insert: function(customerObj) {
-                        saveCustomer(customerObj);
+                    summary: {
+                        totalItems: [{
+                            column: 'name',
+                            summaryType: 'count'
+                        }]
                     },
-                    update: function(key, customerObj) {
-                        updateCustomer(key, customerObj);
-                    },
-                    remove: function(key) {
-                        deleteCustomer(key);
+                    columns: config.customerGridCols(),
+                    export: {
+                        enabled: true,
+                        fileName: 'Drivers',
+                        allowExportSelectedData: true
                     }
-                },
-                loadPanel: {
-                    enabled: true
-                },
-                scrolling: {
-                    mode: "virtual"
-                },
-                headerFilter: {
-                    visible: false
-                },
-                searchPanel: {
-                    visible: true,
-                    width: 240,
-                    placeholder: "Search..."
-                },
-                "export": {
-                    enabled: true,
-                    fileName: "Customers",
-                    allowExportSelectedData: true
-                },
-                columnChooser: {
-                    enabled: true
-                },
-                editing: {
-                    allowAdding: true,
-                    allowUpdating: true,
-                    allowDeleting: true,
-                    mode: "batch",
-                    form: formOptions()
-                },
-                selection: {
-                    mode: 'multiple',
-                    showCheckBoxesMode: 'always'
-                },
-                columns: formOptions().items,
-                onContentReady: function (e) {
-                    e.component.option("loadPanel.enabled", false);
-                },
-                summary: {
-                    totalItems: [{
-                        column: "name",
-                        summaryType: "count"
-                    }]
-                },
-                stateStoring: {
-                    enabled: true,
-                    type: "localStorage",
-                    storageKey: "storage"
-                },
-                showColumnLines: true,
-                showRowLines: true,
-                showBorders: false,
-                rowAlternationEnabled: false
-            };
+                };
+
+            angular.extend(gridOptions, otherConfig);
             return gridOptions;
         };
 
@@ -202,7 +165,7 @@
          * @returns {Object} Customer data
          */
         function fetchCustomerList() {
-            var ref = rootRef.child('tenant-customers').child(tenantId);
+            var ref = rootRef.child('tenant-customers').child(tenantId).orderByChild('deactivated').equalTo(null);
             return firebaseUtils.fetchList(ref);
         }
 
@@ -215,6 +178,14 @@
             return firebaseUtils.updateData(ref, customerData);
         }
 
+        /**
+         * Delete Customer
+         * @returns {Object} customer data
+         */
+        function deleteCustomer(key) {
+            var ref = rootRef.child('tenant-customers').child(tenantId).child(key['$id']);
+            return firebaseUtils.updateData(ref, { deactivated: false });
+        }
 
     }
 }());

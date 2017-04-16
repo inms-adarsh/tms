@@ -28,12 +28,7 @@
         // Translation
         $translatePartialLoaderProvider.addPart('app/main/auth/login');
 
-        // Navigation
-        msNavigationServiceProvider.saveItem('pages.auth.login', {
-            title : 'Login v2',
-            state : 'app.auth_login',
-            weight: 2
-        });
+      
     }
 
 })();

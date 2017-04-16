@@ -23,9 +23,6 @@
             // Authentication
             'app.auth',
 
-            //Freight Management
-            'app.e-commerce',
-
             //Firebase
             'firebase',
 
@@ -33,6 +30,10 @@
             //'app.mail',
 
             //Admin
-            'app.admin'
+            'app.admin',
+
+            //Freight Management
+            'app.shipments'
+
         ]);
 })();
