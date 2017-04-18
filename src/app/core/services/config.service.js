@@ -15,7 +15,8 @@
             containerGridCols: containerGridCols,
             locationGridCols: locationGridCols,
             shipmentGridCols: shipmentGridCols,
-            shipmentForm: shipmentForm
+            taxGridCols: taxGridCols,
+            taxGroupGridCols: taxGroupGridCols
         };
 
         return service;
@@ -282,7 +283,7 @@
                 caption: 'Address'
             }, {
                 dataField: 'city',
-                caption: 'City', 
+                caption: 'City',
                 lookup: { dataSource: formats, valueExpr: 'id', displayExpr: 'format' }
             }, {
                 dataField: 'state',
@@ -297,10 +298,37 @@
             return gridCols;
         }
 
-        function shipmentForm() {
-            var formOptions = [];
-
-            return formOptions;
+        function taxGridCols() {
+            var taxGridCols = [{
+                dataField: 'description',
+                caption: 'Description',
+                validationRules: [{
+                    type: 'required',
+                    message: 'Description is required'
+                }]
+            }, {
+                dataField: 'defaultRate',
+                caption: 'Default Rate(%)',
+                dataType: 'number',
+                validationRules: [{
+                    type: 'required',
+                    message: 'Rate is required'
+                }]
+            }];
+            return taxGridCols;
         }
+
+        function taxGroupGridCols() {
+            var taxgroupGridCols = [{
+                dataField: 'description',
+                caption: 'Description',
+                validationRules: [{
+                    type: 'required',
+                    message: 'Description is required'
+                }]
+            }];
+            return taxgroupGridCols;
+        }
+
     }
 }());

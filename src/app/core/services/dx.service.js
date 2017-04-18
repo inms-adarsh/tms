@@ -52,15 +52,11 @@
                 onContentReady: function (e) {
                     e.component.option('loadPanel.enabled', false);
                 },
-                stateStoring: {
-                    enabled: true,
-                    type: 'localStorage',
-                    storageKey: 'storage'
-                },
                 showColumnLines: true,
                 showRowLines: true,
                 showBorders: false,
-                rowAlternationEnabled: false
+                rowAlternationEnabled: false,
+                columnAutoWidth: true
             };
             return gridOptions;
 

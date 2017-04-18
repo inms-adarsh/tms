@@ -33,7 +33,10 @@
             'app.admin',
 
             //Freight Management
-            'app.shipments'
+            'app.shipments',
+
+            //Settings
+            'app.settings'
 
         ]);
 })();
